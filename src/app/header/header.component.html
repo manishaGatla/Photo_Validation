@@ -1,0 +1,12 @@
+<div class="header">
+    <h1>ID Verification by Photo Recognition</h1>
+    <div class="form-group" *ngIf="!service.isRegisterClicked && !service.isLoginClicked">
+        <button class="btn btn-primary" (click)="registerClicked()"> Register</button>
+        <button class="btn btn-primary" (click)="loginClicked()">Login</button>
+    </div>
+
+    <div class="form-group" *ngIf="service.isLoginSuccessful">
+        <button class="btn btn-primary" (click)="logoutClicked()"> LogOut</button>
+    
+    </div>
+</div>

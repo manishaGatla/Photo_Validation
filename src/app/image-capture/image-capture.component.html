@@ -1,0 +1,44 @@
+
+
+<div class="content-box">
+<div class="action-buttons">
+  <div class="upload-section">
+    <div>
+      <p class="action-description">{{ uploadImageLabel }}</p>
+      <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden #fileInput>
+      <button class="action-button action-description" (click)="fileInput.click()">Upload Image</button>
+    </div>
+    <div *ngIf="imagePreview">
+      <h3 class="action-description">Uploaded Image</h3>
+      <div class="image-preview">
+        <img [src]="imagePreview" width="640" height="480" alt="Image Preview">
+      </div>
+    </div>
+  </div>
+  <div class="capture-section">
+    <div>
+      <p class="action-description">{{ startCameraLabel }}</p>
+      <button class="action-button action-description" (click)="startCamera()" class="action-button">{{StartCameraActionName}}</button>
+    </div>
+    <div *ngIf="showCamera">
+      <p class="action-description">Click capture when you are ready</p>
+      <video #videoElement width="640" height="480" (loadedmetadata)="startCamera()"></video>
+     <div><button class="action-button action-description" (click)="captureImage()">Capture</button></div>
+    </div>
+    <div class="image-container" *ngIf="capturedImagePreview">
+      <h3 class="action-description">Captured Image</h3>
+      <div class="image-preview">
+        <img [src]="capturedImagePreview" alt="Captured Preview">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="capturedImagePreview && imagePreview">
+  <button >Upload to Server</button>
+  <button >Verify Images</button>
+</div>
+</div>
+<canvas #canvas hidden></canvas>
+
+

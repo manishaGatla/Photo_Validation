@@ -1,0 +1,90 @@
+.header {
+  background: rgba(0, 0, 50, 0.6);
+  padding: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.upload-section,
+.capture-section {
+  flex-basis: 48%;
+}
+
+.content-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 70%;
+  box-sizing: border-box;
+  background-image: url('https://i.pinimg.com/originals/ac/b8/bd/acb8bd2146ce943c223b369a26815a7e.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+h1 {
+  flex-grow: 1;
+  color: rgb(2, 2, 2);
+  margin: 0;
+}
+
+button,
+input[type="submit"],
+.input-button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover,
+input[type="submit"]:hover,
+.input-button:hover {
+  background-color: #0056b3;
+}
+
+.action-description {
+  color: white;
+  font-style: bold;
+}
+
+.image-preview img {
+  max-width: 100%;
+  padding: 5px;
+}
+
+.capture-preview {
+  max-width: 100%;
+  padding: 5px;
+}
+
+.verify-button {
+  background-color: #ff7f50;
+  /* coral color, for contrast */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.verify-button:hover {
+  background-color: #e56740;
+  /* darker shade for hover effect */
+}
+
+.action-buttons {
+  display: flex;
+}

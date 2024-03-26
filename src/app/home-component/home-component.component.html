@@ -1,0 +1,46 @@
+<app-header></app-header>
+
+<form class="content-box" *ngIf="service.isRegisterClicked">
+    <div class="form-group">
+        <h1>
+            Register as a New User
+        </h1>
+    </div>
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="name" id="name" name="name" class="form-control" [(ngModel)]="user.name">
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" class="form-control" [(ngModel)]="user.email">
+    </div>
+    <div class="form-group">
+        <label class="action-description">{{ uploadImageLabel }}</label>
+        <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden #fileInput>
+        <button class="action-button action-description" (click)="fileInput.click()">Upload Image</button>
+    </div>
+    <div class="form-group">
+        <img class="img-preview" *ngIf="urlOfImage != null && urlOfImage != undefined && urlOfImage != ''"
+            [src]="urlOfImage" />
+    </div>
+    <div class="form-group center-align">
+        <button type="submit" class="btn btn-primary" (click)="registerUser()">Register</button>
+        <button type="submit" class="btn btn-primary" (click)="backClicked()">>>Back</button>
+    </div>
+</form>
+
+<form class="content-box" *ngIf="service.isLoginClicked">
+    <div class="form-group">
+        <h1>
+            Login
+        </h1>
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" class="form-control" [(ngModel)]="user.email">
+    </div>
+    <div class="form-group center-align">
+        <button type="submit" class="btn btn-primary" (click)="loginUser()">Login</button>
+        <button type="submit" class="btn btn-primary" (click)="backClicked()">>>Back</button>
+    </div>
+</form>
