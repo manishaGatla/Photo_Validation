@@ -8,15 +8,31 @@
     </div>
     <div class="form-group">
         <label for="name">Name</label>
-        <input type="name" id="name" name="name" class="form-control" [(ngModel)]="user.name">
+        <input required type="name" id="name" name="name" class="form-control" [(ngModel)]="user.name">
     </div>
     <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" class="form-control" [(ngModel)]="user.email">
+        <input required type="email" id="email" name="email" class="form-control" [(ngModel)]="user.email">
+    </div>
+    <div class="error" *ngIf="!isValidEmail(user.email)">
+        <span class="error-message t-r"> Email entered is not valid.</span>
     </div>
     <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" class="form-control" [(ngModel)]="user.password">
+        <input required type="{{ isPasswordVisible ? 'text' : 'password' }}" id="password" name="password" class="form-control"
+            [(ngModel)]="user.password">
+        <span class="password-toggle-icon" [class.fa-eye]="isPasswordVisible" [class.fa-eye-slash]="!isPasswordVisible"
+            (click)="togglePasswordVisibility()"></span>
+    </div>
+    <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input required type="{{ isConfirmPasswordVisible ? 'text' : 'password' }}" id="confirmPassword" name="confirmPassword"
+            class="form-control" [(ngModel)]="confirmPassword">
+        <span class="password-toggle-icon" [class.fa-eye]="isConfirmPasswordVisible"
+            [class.fa-eye-slash]="!isConfirmPasswordVisible" (click)="toggleConfirmPasswordVisibility()"></span>
+    </div>
+    <div class="error" *ngIf="user.password != confirmPassword">
+        <span class="error-message t-r"> Passwords do not match</span>
     </div>
     <div class="form-group">
         <label class="action-description">{{ uploadImageLabel }}</label>
@@ -28,8 +44,11 @@
             [src]="urlOfImage" />
     </div>
     <div class="form-group center-align">
-        <button type="submit" class="btn btn-primary" (click)="registerUser()">Register</button>
+        <button type="submit" class="btn btn-primary" (click)="registerUser()" [disabled]="!checkRegisterEnable()">Register</button>
         <button type="submit" class="btn btn-primary" (click)="backClicked()">>>Back</button>
+    </div>
+    <div class="form-group center-align">
+        <p>Account exists. Please <a class="link" (click)="loginClicked()">log in</a>.</p>
     </div>
 </form>
 
@@ -40,23 +59,28 @@
         </h1>
     </div>
     <div class="form-group">
-        <label for="name">Name</label>
-        <input type="name" id="name" name="name" class="form-control" [(ngModel)]="user.name">
-    </div>
-    <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" class="form-control" [(ngModel)]="user.email">
+        <input type="email" required id="email" name="email" class="form-control" [(ngModel)]="user.email">
+    </div>
+    <div class="error" *ngIf="!isValidEmail(user.email)">
+        <span class="error-message t-r"> Email entered is not valid.</span>
     </div>
     <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" class="form-control" [(ngModel)]="user.password">
+        <input required type="{{ isPasswordVisible ? 'text' : 'password' }}" id="password" name="password" class="form-control" [(ngModel)]="user.password">
+        <span class="password-toggle-icon" [class.fa-eye]="isPasswordVisible" [class.fa-eye-slash]="!isPasswordVisible"
+        (click)="togglePasswordVisibility()"></span>
     </div>
     <div hidden>
         <video #videoElement width="640" height="480" (loadedmetadata)="startCamera()"></video>
-      </div>
+    </div>
     <div class="form-group center-align">
-        <button type="submit" class="btn btn-primary" (click)="loginUser()">Login</button>
+        <button type="submit" class="btn btn-primary" (click)="loginUser()" [disabled]="!checkRegisterEnable()">Login</button>
         <button type="submit" class="btn btn-primary" (click)="backClicked()">>>Back</button>
+    </div>
+
+    <div class="form-group center-align">
+        <p>New User. Please <a class="link" (click)="registerClicked()">Register</a>.</p>
     </div>
 </form>
 <canvas #canvas hidden></canvas>

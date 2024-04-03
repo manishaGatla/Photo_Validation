@@ -19,7 +19,7 @@ export class ImageCaptureServiceService {
   }
 
   public callLambdaFunctionForLogin(payload: any) {
-    return this.http.post(this.apiGatewayEndpointForLogin, payload);
+    return this.http.get(this.apiGatewayEndpointForLogin+ '?email='+ payload.email + '&password='+ payload.password);
   }
 
   getPresignedUrl(fileName: string) {

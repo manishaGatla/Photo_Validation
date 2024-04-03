@@ -1,3 +1,5 @@
+@import '~@fortawesome/fontawesome-free/css/all.css';
+
 body {
     font-family: 'Arial', sans-serif;
     color: #333;
@@ -26,6 +28,15 @@ button {
   width: 120px;
 }
 
+.error {
+  margin-left: 230px  !important; 
+  margin: 20px; 
+}
+
+.error span {
+  font-weight: bold; 
+  color: red; 
+}
 
 input{
   height: 45px;
@@ -38,6 +49,12 @@ label {
   text-align: right; /* Align labels to the right */
   margin-right: 10px; /* Add some space between label and input */
   font-weight: bold;
+}
+
+button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
 }
 
 .img-preview{
@@ -75,4 +92,10 @@ h1{
   font-style: bold;
   color: white;
   text-align: center;
+}
+
+.password-toggle-icon {
+  font-family: "Font Awesome 5 Free" !important;
+  cursor: pointer !important;
+  margin-left: -27px !important;
 }
