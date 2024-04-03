@@ -15,6 +15,10 @@
         <input type="email" id="email" name="email" class="form-control" [(ngModel)]="user.email">
     </div>
     <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="form-control" [(ngModel)]="user.password">
+    </div>
+    <div class="form-group">
         <label class="action-description">{{ uploadImageLabel }}</label>
         <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden #fileInput>
         <button class="action-button action-description" (click)="fileInput.click()">Upload Image</button>
@@ -36,11 +40,23 @@
         </h1>
     </div>
     <div class="form-group">
+        <label for="name">Name</label>
+        <input type="name" id="name" name="name" class="form-control" [(ngModel)]="user.name">
+    </div>
+    <div class="form-group">
         <label for="email">Email</label>
         <input type="email" id="email" name="email" class="form-control" [(ngModel)]="user.email">
     </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="form-control" [(ngModel)]="user.password">
+    </div>
+    <div hidden>
+        <video #videoElement width="640" height="480" (loadedmetadata)="startCamera()"></video>
+      </div>
     <div class="form-group center-align">
         <button type="submit" class="btn btn-primary" (click)="loginUser()">Login</button>
         <button type="submit" class="btn btn-primary" (click)="backClicked()">>>Back</button>
     </div>
 </form>
+<canvas #canvas hidden></canvas>
