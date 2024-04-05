@@ -23,6 +23,7 @@ export class HomeComponentComponent implements OnInit {
   confirmPassword: any;
   isPasswordVisible: boolean = false;
   isConfirmPasswordVisible: boolean = false;
+  capturedFile: any;
 
   constructor(public service: ImageCaptureServiceService) { }
   ngOnInit(): void {
@@ -49,27 +50,23 @@ export class HomeComponentComponent implements OnInit {
 
   loginUser() {
     if (this.checkLoginEnable()) {
-      this.startCamera();
+      var photoUrl = `https://capturedvalidationimages.s3.amazonaws.com/capturedimages/${this.user.email.split('@')[0]+ '_'+ this.user.name}.jpg`;
+      //this.startCamera();
       const payload = {
         "email": this.user.email,
-        "username": this.user.name,
         "password": this.user.password
       }
-      this.captureImage();
+      //this.captureImage();
       this.service.callLambdaFunctionForLogin(payload).subscribe((res: any) => {
-        if (res && res.statusCode == 200) {
-
-
-        }
-        else if (res && res.statusCode == 400) {
-          alert("Error: Incorrect Password. Please reenter correct password");
+        if (res && !res.error) {
+            alert('Login Successful');
+        }         
+      },(error)=>{
+        if (error) {
+          alert('Error: ' +error.error.error);          
           this.user.password = null;
-          this.isPasswordVisible = false;
-        }
-        else if (res && res.statusCode == 404) {
-          alert("Error: User Not Found. Please Register.");
-          this.reset();
-          this.service.isRegisterClicked = true;
+          if(error.error.error ==  'User Not Found. Please Register.')this.service.isRegisterClicked = true; 
+          else this.isPasswordVisible = false;
         }
       })
     }
@@ -104,14 +101,14 @@ export class HomeComponentComponent implements OnInit {
 
   registerUser() {
     if (this.checkRegisterEnable()) {
-      var photoUrl = `https://verify-id-webapp.s3.amazonaws.com/profile_pictures/${this.user.name}/profile.jpg`;
+      var photoUrl = `https://profilesids.s3.amazonaws.com/photoids/${this.user.email.split('@')[0]+ '_'+ this.user.name}.jpg`;
       const payload = {
         "email": this.user.email,
         "username": this.user.name,
         "password": this.user.password,
         "profile_picture_url": photoUrl
       }
-      this.service.uploadFile(this.selectedFile.file as File, photoUrl).subscribe({
+      this.service.uploadFiles(this.selectedFile.file as File, this.user.email.split('@')[0]+ '_'+ this.user.name,'profilesids', 'photoids/'+this.user.email.split('@')[0]+ '_'+ this.user.name).subscribe({
         next: () => {
           this.service.callLambdaFunctionForRegister(payload).subscribe((res: any) => {
             if (res && res.statusCode == 200) {
@@ -126,6 +123,20 @@ export class HomeComponentComponent implements OnInit {
     else {
       alert('Warning: Please ensure all required fields are filled out.');
     }
+  }
+
+  convertBase64ToFile(base64String: string, filename: string): File {
+    const parts = base64String.split(';base64,');
+    const imageType = parts[0].split(':')[1];
+    const decodedData = window.atob(parts[1]); 
+    const uInt8Array = new Uint8Array(decodedData.length);
+    for (let i = 0; i < decodedData.length; ++i) {
+      uInt8Array[i] = decodedData.charCodeAt(i);
+    }
+  
+    const blob = new Blob([uInt8Array], { type: imageType });
+  
+    return new File([blob], filename, { type: imageType });
   }
 
   isValidEmail(email: string): boolean {
@@ -200,6 +211,7 @@ export class HomeComponentComponent implements OnInit {
       this.canvas.nativeElement.height = height;
       context.drawImage(this.videoElement.nativeElement, 0, 0, width, height);
       this.capturedImageUrl = this.canvas.nativeElement.toDataURL('image/png');
+      this.capturedFile =this.convertBase64ToFile(this.capturedImageUrl, this.user.email.split('@')[0]);
     }
   }
 }

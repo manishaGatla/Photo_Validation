@@ -75,7 +75,7 @@
         <video #videoElement width="640" height="480" (loadedmetadata)="startCamera()"></video>
     </div>
     <div class="form-group center-align">
-        <button type="submit" class="btn btn-primary" (click)="loginUser()" [disabled]="!checkRegisterEnable()">Login</button>
+        <button type="submit" class="btn btn-primary" (click)="loginUser()" [disabled]="!checkLoginEnable()">Login</button>
         <button type="submit" class="btn btn-primary" (click)="backClicked()">>>Back</button>
     </div>
 
