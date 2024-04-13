@@ -2,6 +2,10 @@
 
 <div class="loader" *ngIf="isLoading"></div>
 
+<div class="content-box" *ngIf="service.isLoginSuccessful">
+    <p>Click here to navigate to <a target="_blank" [href]="url">Cloud Security</a></p>
+</div>
+
 <form class="content-box" *ngIf="service.isRegisterClicked">
     <div class="form-group">
         <h1>

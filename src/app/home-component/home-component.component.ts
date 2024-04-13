@@ -3,6 +3,7 @@ import { ImageCaptureServiceService } from '../image-capture-service.service';
 import { ElementRef } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { json } from 'stream/consumers';
+import { url } from 'inspector';
 @Component({
   selector: 'app-home-component',
   templateUrl: './home-component.component.html',
@@ -26,6 +27,7 @@ export class HomeComponentComponent implements OnInit {
   isPasswordVisible: boolean = false;
   isConfirmPasswordVisible: boolean = false;
   capturedFile: any;
+  url ='https://aws.amazon.com/security/';
   
 
   isLoading = false;
@@ -80,7 +82,8 @@ export class HomeComponentComponent implements OnInit {
                       this.isLoading = false;
                       this.reset();
                       alert("Success: login successful! Welcome to our platform.");
-                      this.stopCamera();
+                      this.stopCamera();                      
+                      this.service.isLoginSuccessful = true;
                     }
                     else{
                       alert("Match failed, please try logging again");
@@ -109,27 +112,18 @@ export class HomeComponentComponent implements OnInit {
 
 
   stopCamera(): void {
+    this.videoElement.nativeElement.srcObject = null;
+    this.videoElement.nativeElement.src = '';
+    this.videoElement.nativeElement.pause()
     if (this.stream) {
       const tracks = this.stream.getTracks();
       tracks.forEach(track => {
-        console.log(`Stopping track: ${track.kind}`);
         track.stop();
         track.enabled = false;
-      });
-      console.log('All tracks stopped.');
-  
-      if (this.videoElement && this.videoElement.nativeElement) {
-        // This is just to remove the video stream from the video element.
-        console.log('entered here');
-        
-        this.videoElement.nativeElement.srcObject = null;
-        this.videoElement.nativeElement.pause()
-      }
-      console.log('exit');
-  
-      // Reset the stream
+      });  
       this.stream = null;
-      window.location.reload();
+      //window.location.reload();
+      //window.location.href='https://aws.amazon.com/security/';
     } else {
       console.log('No stream available to stop.');
     }
