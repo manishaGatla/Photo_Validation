@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ImageCaptureServiceService } from '../image-capture-service.service';
 import { ElementRef } from '@angular/core';
 import { ViewChild } from '@angular/core';
+import { json } from 'stream/consumers';
+import { url } from 'inspector';
 @Component({
   selector: 'app-home-component',
   templateUrl: './home-component.component.html',
@@ -18,12 +20,17 @@ export class HomeComponentComponent implements OnInit {
     password: null
   };
   public urlOfImage: string = '';
+  private stream: MediaStream | null = null;
   public selectedFile: any;
   capturedImageUrl: any;
   confirmPassword: any;
   isPasswordVisible: boolean = false;
   isConfirmPasswordVisible: boolean = false;
   capturedFile: any;
+  url ='https://aws.amazon.com/security/';
+  
+
+  isLoading = false;
 
   constructor(public service: ImageCaptureServiceService) { }
   ngOnInit(): void {
@@ -50,16 +57,44 @@ export class HomeComponentComponent implements OnInit {
 
   loginUser() {
     if (this.checkLoginEnable()) {
+      this.isLoading = true;
       var photoUrl = `https://capturedvalidationimages.s3.amazonaws.com/capturedimages/${this.user.email.split('@')[0]+ '_'+ this.user.name}.jpg`;
-      //this.startCamera();
+      this.startCamera();
       const payload = {
         "email": this.user.email,
         "password": this.user.password
-      }
-      //this.captureImage();
+      };
       this.service.callLambdaFunctionForLogin(payload).subscribe((res: any) => {
         if (res && !res.error) {
-            alert('Login Successful');
+            this.captureImage();              
+            this.service.uploadFiles(this.capturedFile as File, this.user.email.split('@')[0],'capturedvalidationimages', 'capturedimages/'+this.user.email.split('@')[0]).subscribe({
+              next: () => {
+                var validatePayload = {
+                  "source_bucket": "capturedvalidationimages",
+                  "source_key": "capturedimages/" + this.user.email.split('@')[0],
+                  "target_bucket": "profilesids",
+                  "target_key": "photoids/"+ this.user.email.split('@')[0] + '_'+ res.Name
+                }
+                this.service.callLambdaFunctionForValidate(validatePayload).subscribe((response: any) => {
+                  if (response && response.statusCode == 200) {
+                    var parsedResponse =JSON.parse(response.body);
+                    if(parsedResponse.MatchPercentage > 80){
+                      this.isLoading = false;
+                      this.reset();
+                      alert("Success: login successful! Welcome to our platform.");
+                      this.stopCamera();                      
+                      this.service.isLoginSuccessful = true;
+                    }
+                    else{
+                      alert("Match failed, please try logging again");
+                      this.reset();
+                    }
+                    
+                  }
+                });
+              },
+              error: () => alert('Upload failed'),
+            });
         }         
       },(error)=>{
         if (error) {
@@ -75,10 +110,31 @@ export class HomeComponentComponent implements OnInit {
     }
   }
 
+
+  stopCamera(): void {
+    this.videoElement.nativeElement.srcObject = null;
+    this.videoElement.nativeElement.src = '';
+    this.videoElement.nativeElement.pause()
+    if (this.stream) {
+      const tracks = this.stream.getTracks();
+      tracks.forEach(track => {
+        track.stop();
+        track.enabled = false;
+      });  
+      this.stream = null;
+      //window.location.reload();
+      //window.location.href='https://aws.amazon.com/security/';
+    } else {
+      console.log('No stream available to stop.');
+    }
+  }
+  
+
   startCamera(): void {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && this.service.isLoginClicked) {
       navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
+          this.stream = stream;
           this.videoElement.nativeElement.srcObject = stream;
           this.videoElement.nativeElement.play()
             .catch((error: any) => {
@@ -125,18 +181,24 @@ export class HomeComponentComponent implements OnInit {
     }
   }
 
-  convertBase64ToFile(base64String: string, filename: string): File {
+  convertBase64ToFile(base64String: string, filename: string): File |any {
     const parts = base64String.split(';base64,');
     const imageType = parts[0].split(':')[1];
-    const decodedData = window.atob(parts[1]); 
-    const uInt8Array = new Uint8Array(decodedData.length);
-    for (let i = 0; i < decodedData.length; ++i) {
-      uInt8Array[i] = decodedData.charCodeAt(i);
+    try{
+      const decodedData = window.atob(parts[1]); 
+      const uInt8Array = new Uint8Array(decodedData.length);
+      for (let i = 0; i < decodedData.length; ++i) {
+        uInt8Array[i] = decodedData.charCodeAt(i);
+      }
+    
+      const blob = new Blob([uInt8Array], { type: imageType });
+    
+      return new File([blob], filename, { type: imageType });
     }
-  
-    const blob = new Blob([uInt8Array], { type: imageType });
-  
-    return new File([blob], filename, { type: imageType });
+    catch{
+      this.loginUser();
+    }
+    
   }
 
   isValidEmail(email: string): boolean {
@@ -210,7 +272,7 @@ export class HomeComponentComponent implements OnInit {
       this.canvas.nativeElement.width = width;
       this.canvas.nativeElement.height = height;
       context.drawImage(this.videoElement.nativeElement, 0, 0, width, height);
-      this.capturedImageUrl = this.canvas.nativeElement.toDataURL('image/png');
+      this.capturedImageUrl = this.canvas.nativeElement.toDataURL('image/png');   
       this.capturedFile =this.convertBase64ToFile(this.capturedImageUrl, this.user.email.split('@')[0]);
     }
   }

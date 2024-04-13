@@ -20,7 +20,7 @@ export class ImageCaptureServiceService {
 
    
 
-  //private apiGatewayEndpointForRegister = 'https://xlxhu4v6r9.execute-api.us-east-1.amazonaws.com/stage1/';
+  private apiGatewayEndpointForValidate = 'https://nrmmf02dsj.execute-api.us-east-1.amazonaws.com/dev';
   private apiGatewayEndpointForRegister = 'https://nrmmf02dsj.execute-api.us-east-1.amazonaws.com/dev/Users';
   private apiGatewayEndpointForLogin = 'https://nrmmf02dsj.execute-api.us-east-1.amazonaws.com/dev/Users';
 
@@ -32,6 +32,10 @@ export class ImageCaptureServiceService {
 
   public callLambdaFunctionForLogin(payload: any) {
     return this.http.get(this.apiGatewayEndpointForLogin+ '?email='+ payload.email + '&password='+ payload.password );
+  }
+
+  public callLambdaFunctionForValidate(payload: any) {
+    return this.http.post(this.apiGatewayEndpointForValidate, payload );
   }
 
 
