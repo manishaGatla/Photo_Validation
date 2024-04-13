@@ -1,5 +1,7 @@
 <app-header></app-header>
 
+<div class="loader" *ngIf="isLoading"></div>
+
 <form class="content-box" *ngIf="service.isRegisterClicked">
     <div class="form-group">
         <h1>
