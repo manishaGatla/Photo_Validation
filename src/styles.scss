@@ -24,7 +24,7 @@ button {
   cursor: pointer;
   background-color: #007bff;
   color: #fff;
-  height: 45px;
+  height: 30px;
   width: 120px;
 }
 
@@ -58,7 +58,7 @@ button {
 }
 
 input{
-  height: 45px;
+  height: 30px;
   width: 360px;
 }
 
@@ -77,12 +77,12 @@ button:disabled {
 }
 
 .img-preview{
-  height: 200px;
+  height: 100px;
   width: 100px;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 
 .center-align{
@@ -92,15 +92,15 @@ button:disabled {
 
 .content-box {
   position: absolute;
-  top: 50%;
+  top: 53%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgb(239 233 233 / 65%);
+  background: rgba(239, 233, 233, 0.65);
   padding: 20px;
   border-radius: 8px;
-  width: 40%;
-  max-width: 50%;
-  box-sizing: border-box;    
+  width: 85%;
+  max-width: 80%;
+  box-sizing: border-box;
   background-repeat: no-repeat;
   background-size: cover;
  
