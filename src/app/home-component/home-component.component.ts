@@ -78,8 +78,8 @@ export class HomeComponentComponent implements OnInit {
                 this.service.callLambdaFunctionForValidate(validatePayload).subscribe((response: any) => {
                   if (response && response.statusCode == 200) {
                     var parsedResponse =JSON.parse(response.body);
-                    if(parsedResponse.MatchPercentage > 80){
-                      this.isLoading = false;
+                    this.isLoading = false;
+                    if(parsedResponse.MatchPercentage > 80){                      
                       this.reset();
                       alert("Success: login successful! Welcome to our platform.");
                       this.stopCamera();                      
@@ -93,15 +93,21 @@ export class HomeComponentComponent implements OnInit {
                   }
                 });
               },
-              error: () => alert('Upload failed'),
+              error: () =>{ 
+              alert('Upload failed');
+              this.isLoading = false;
+            }
+
             });
         }         
       },(error)=>{
         if (error) {
+          this.isLoading = false;
           alert('Error: ' +error.error.error);          
           this.user.password = null;
-          if(error.error.error ==  'User Not Found. Please Register.')this.service.isRegisterClicked = true; 
+          if(error.error.error ==  'User Not Found. Please Register.') this.service.isRegisterClicked = true; 
           else this.isPasswordVisible = false;
+          location.reload();
         }
       })
     }
@@ -138,20 +144,17 @@ export class HomeComponentComponent implements OnInit {
           this.videoElement.nativeElement.srcObject = stream;
           this.videoElement.nativeElement.play()
             .catch((error: any) => {
-              if (error.name === "NotAllowedError") {
-                alert('Warning: Please allow camera access and refresh the page.');
-              }
+              alert('Warning: Unable to capture the image, Please check the camera access and refresh the page.');
               console.error('Error: Error trying to play the video stream', error);
+              location.reload();
             });
         })
         .catch(error => {
-          console.error('Error getting user media:', error);
-          if (error.name === "NotAllowedError") {
-            alert('Warning: Please allow camera access and refresh the page.');
-          }
+          alert('Warning: Unable to capture the image, Please check the camera access and refresh the page.');
+          
         });
     } else {
-      console.error('Error: Media devices are not supported by this browser.');
+      console.error('Error: Media devices are not supported by this browser.');     
     }
   }
 
